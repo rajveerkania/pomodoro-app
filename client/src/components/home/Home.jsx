@@ -10,7 +10,7 @@ const Home = () => {
           <br />
           ultimate productivity ally.
         </h1>
-        <button class="home-btn p-2">Make To Do List</button>
+        <button class="home-btn p-2">Pomodoro</button>
       </div>
     </div>
   );

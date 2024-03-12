@@ -1,0 +1,57 @@
+.todo {
+  width: 100%;
+  min-height: 100vh;
+  max-height: auto;
+}
+
+h1 {
+  text-align: center;
+}
+
+.add-heading {
+  margin: 10px;
+}
+
+.add-task-btn {
+  background: #ffffff;
+  max-width: 360px;
+  margin: 15px auto 50px;
+  padding: 45px;
+  text-align: center;
+  border-radius: 8px;
+  box-shadow:
+    0 0 20px 0 rgba(0, 0, 0, 0.2),
+    0 5px 5px 0 rgba(0, 0, 0, 0.24);
+}
+
+.form-check {
+  margin: 20px 10px 15px 10px;
+}
+
+.form-check-input:checked {
+  background-color: rgba(240, 0, 0, 0.87);
+  box-shadow: none;
+}
+
+.time-input {
+  margin: 10px;
+}
+
+.add-btn {
+  width: 200px;
+  border: none;
+  outline: none;
+  background-color: rgba(240, 0, 0, 0.87);
+  border-radius: 8px;
+  color: #ffffff !important;
+  font-weight: bold;
+  margin: 10px;
+}
+
+@media (max-width: 767px) {
+  .add-task-btn {
+    max-width: 90%;
+    padding: 30px;
+    margin: 10px auto 30px;
+  }
+}
