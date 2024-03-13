@@ -48,6 +48,30 @@ h1 {
   margin: 10px;
 }
 
+.todo-cards {
+  border: 2px solid #000000;
+  border-radius: 3px;
+}
+
+.todo-cards-pre {
+  font-size: 20px;
+  justify-content: center;
+  text-align: center;
+}
+
+.cards-icon {
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.cards-icon:hover {
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 10px 15px;
+}
+
+.del {
+  color: rgba(240, 0, 0, 0.87);
+}
+
 @media (max-width: 767px) {
   .add-task-btn {
     max-width: 90%;

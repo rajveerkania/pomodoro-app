@@ -1,0 +1,25 @@
+import React from "react";
+import { GrUpdate } from "react-icons/gr";
+import { MdDelete } from "react-icons/md";
+
+const TodoCards = ({ type, time }) => {
+  return (
+    <div className="todo-cards p-3">
+      <div>
+        <pre className="todo-cards-pre">
+          {type} - {time} mins
+        </pre>
+      </div>
+      <div className="d-flex justify-content-around card-icon-head">
+        <div className="cards-icon px-2 py-1">
+          <GrUpdate /> Update
+        </div>
+        <div className="cards-icon px-2 py-1 del">
+          <MdDelete /> Delete
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default TodoCards;

@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import "./Todo.css";
+import TodoCards from "./TodoCards";
 
 const Todo = () => {
   const [formData, setFormData] = useState({ type: "", time: "" });
+  const [Array, setArrays] = useState([]);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -12,6 +14,7 @@ const Todo = () => {
   const handleAddButtonClick = () => {
     console.log(formData);
     setFormData({ type: "", time: "" });
+    setArrays([...Array, formData]);
     document.getElementById("flexRadioDefault1").checked = false;
     document.getElementById("flexRadioDefault2").checked = false;
     document.getElementById("timeInput").value = null;
@@ -70,8 +73,15 @@ const Todo = () => {
       {/* Dynamic Part */}
       <div className="container">
         <div className="row">
-          <div className="col">1 of 2</div>
-          <div className="col">2 of 2</div>
+          <div className="col-lg-9 col-md-12 col-sm-12"></div>
+          <div className="col-lg-3 col-md-12 col-sm-12">
+            {Array &&
+              Array.map((item, index) => (
+                <div className="p-3">
+                  <TodoCards type={item.type} time={item.time} />
+                </div>
+              ))}
+          </div>
         </div>
       </div>
     </div>
