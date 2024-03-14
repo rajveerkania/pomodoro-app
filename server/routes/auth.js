@@ -6,13 +6,18 @@ const bcrypt = require("bcryptjs");
 
 router.post("/signup", async (req, res) => {
   try {
-    const { uid, email, password } = req.body;
+    const { username, email, password } = req.body;
     const hashpassword = bcrypt.hashSync(password);
-    const user = new User({ uid, email, password: hashpassword });
-    await user.save().then(() => res.status(200).json({ email: email }));
+    const user = new User({ username, email, password: hashpassword });
+    await user
+      .save()
+      .then(() =>
+        res.status(200).json({ message: "User has been registered" }),
+      );
   } catch (error) {
+    console.log(error);
     res
-      .status(400)
+      .status(200)
       .json({ message: "The username/email has already been registered!" });
   }
 });
@@ -23,7 +28,7 @@ router.post("/signin", async (req, res) => {
   try {
     const user = await User.findOne({ email: req.body.email });
     if (!user) {
-      res.status(400).json({ message: "Please Signup first!" });
+      res.status(200).json({ message: "Please Signup first!" });
     }
 
     const isPasswordCorrect = bcrypt.compareSync(
@@ -32,13 +37,15 @@ router.post("/signin", async (req, res) => {
     );
 
     if (!isPasswordCorrect) {
-      res.status(403).json({ message: "Incorrect Password" });
+      res.status(200).json({ message: "Incorrect Password" });
     }
 
     // To Display every detail of the user other than password
     const { password, ...others } = user._doc;
     res.status(200).json({ others });
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+  }
 });
 
 module.exports = router;

@@ -1,9 +1,20 @@
 import React from "react";
 import "../navbar/Navbar.css";
 import { GiWhiteBook } from "react-icons/gi";
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { authActions } from "../../store";
 
 const Navbar = () => {
+  const dispatch = useDispatch();
+  const isLoggedIn = useSelector((state) => state.isLoggedIn);
+
+  const logout = () => {
+    sessionStorage.clear("id");
+    dispatch(authActions.logout());
+  };
+
   return (
     <div>
       <nav className="navbar navbar-expand-lg bg-body-tertiary">
@@ -49,33 +60,43 @@ const Navbar = () => {
                   ToDo
                 </Link>
               </li>
-              <li className="nav-item mx-2">
-                <Link
-                  className=" nav-link active nav-btn"
-                  aria-current="page"
-                  to="/signin"
-                >
-                  Signin
-                </Link>
-              </li>
-              <li className="nav-item mx-2">
-                <Link
-                  className=" nav-link active nav-btn"
-                  aria-current="page"
-                  to="/signup"
-                >
-                  Signup
-                </Link>
-              </li>
-              <li className="nav-item mx-2">
-                <Link
-                  className=" nav-link active nav-btn"
-                  aria-current="page"
-                  to="#"
-                >
-                  Logout
-                </Link>
-              </li>
+              {!isLoggedIn && (
+                <>
+                  <li className="nav-item mx-2">
+                    <Link
+                      className=" nav-link active nav-btn"
+                      aria-current="page"
+                      to="/signin"
+                    >
+                      Signin
+                    </Link>
+                  </li>
+                  <li className="nav-item mx-2">
+                    <Link
+                      className=" nav-link active nav-btn"
+                      aria-current="page"
+                      to="/signup"
+                    >
+                      Signup
+                    </Link>
+                  </li>
+                </>
+              )}
+
+              {isLoggedIn && (
+                <>
+                  <li className="nav-item mx-2">
+                    <Link
+                      className=" nav-link active nav-btn"
+                      aria-current="page"
+                      to="#"
+                      onClick={logout}
+                    >
+                      Logout
+                    </Link>
+                  </li>
+                </>
+              )}
             </ul>
           </div>
         </div>
