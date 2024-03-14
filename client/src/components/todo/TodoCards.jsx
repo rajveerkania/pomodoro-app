@@ -2,7 +2,7 @@ import React from "react";
 import { GrUpdate } from "react-icons/gr";
 import { MdDelete } from "react-icons/md";
 
-const TodoCards = ({ type, time }) => {
+const TodoCards = ({ type, time, id, delId, display }) => {
   return (
     <div className="todo-cards p-3">
       <div>
@@ -11,10 +11,20 @@ const TodoCards = ({ type, time }) => {
         </pre>
       </div>
       <div className="d-flex justify-content-around card-icon-head">
-        <div className="cards-icon px-2 py-1">
+        <div
+          className="cards-icon px-2 py-1"
+          onClick={() => {
+            display("block");
+          }}
+        >
           <GrUpdate /> Update
         </div>
-        <div className="cards-icon px-2 py-1 del">
+        <div
+          className="cards-icon px-2 py-1 del"
+          onClick={() => {
+            delId(id);
+          }}
+        >
           <MdDelete /> Delete
         </div>
       </div>
