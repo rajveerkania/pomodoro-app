@@ -9,6 +9,7 @@ import "react-toastify/dist/ReactToastify.css";
 const Todo = () => {
   let toUpdateArray = [];
   let id = sessionStorage.getItem("id");
+
   const [formData, setFormData] = useState({ type: "", time: "" });
   const [todoArray, setTodoArray] = useState([]);
 
@@ -61,7 +62,7 @@ const Todo = () => {
   };
 
   const update = (value) => {
-    toUpdateArray = Array[value];
+    toUpdateArray = todoArray[value];
   };
 
   useEffect(() => {

@@ -1,10 +1,27 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { IoClose } from "react-icons/io5";
 
 const Update = ({ display, update }) => {
-  const updateChange = () => {
-    console.log("Flag");
+  const [Inputs, setInputs] = useState({
+    type: update.type,
+    time: update.time,
+  });
+
+  useEffect(() => {
+    setInputs({ type: update.type, time: update.time });
+  }, [update]);
+
+  const updateChange = (e) => {
+    const { name, value } = e.target;
+    setInputs({ ...Inputs, [name]: value });
   };
+
+  const submit = () => {
+    console.log(Inputs);
+    display("none");
+    setInputs({ type: "", time: "" });
+  };
+
   return (
     <div className="p-5 d-flex justify-content-center align-items-center flex-column update">
       <div className="update-heading justify-content-center">
@@ -20,7 +37,8 @@ const Update = ({ display, update }) => {
             type="radio"
             name="type"
             id="flexRadioDefault1_update"
-            value={update.type}
+            value="Work"
+            checked={Inputs.type === "Work"}
             onChange={updateChange}
           />
           <label
@@ -36,7 +54,8 @@ const Update = ({ display, update }) => {
             type="radio"
             name="type"
             id="flexRadioDefault2_update"
-            value={update.type}
+            value="Break"
+            checked={Inputs.type === "Break"}
             onChange={updateChange}
           />
           <label
@@ -53,13 +72,15 @@ const Update = ({ display, update }) => {
           type="number"
           id="timeInput_update"
           name="time"
-          value={update.time}
+          value={Inputs.time}
           onChange={updateChange}
           placeholder="Time (in minutes)"
         />
       </div>
       <div className="button-div d-flex justify-content-center align-items-center">
-        <button className="update-btn p-2">Update</button>
+        <button className="update-btn p-2" onClick={submit}>
+          Update
+        </button>
       </div>
     </div>
   );

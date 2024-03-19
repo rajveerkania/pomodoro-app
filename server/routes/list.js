@@ -2,7 +2,6 @@ const router = require("express").Router();
 const User = require("../models/user");
 const List = require("../models/list");
 
-//Insert
 router.post("/addTask", async (req, res) => {
   try {
     const { type, time, id } = req.body;
@@ -21,26 +20,17 @@ router.post("/addTask", async (req, res) => {
   }
 });
 
-// Update
-router.post("/updateTask/:id", async (req, res) => {
+router.put("/updateTask/:id", async (req, res) => {
   try {
-    const { type, time, email } = req.body;
-    const existingUser = await User.findOne({ email });
-
-    if (existingUser) {
-      const list = await List.findByIdAndUpdate(req.params.id, { type, time });
-      list
-        .save()
-        .then(() =>
-          res.status(200).json({ message: "Task has been updated!" }),
-        );
-    }
+    const { type, time } = req.body;
+    const list = await List.findByIdAndUpdate(req.params.id, { type, time });
+    list
+      .save()
+      .then(() => res.status(200).json({ message: "Task has been updated!" }));
   } catch (error) {
     console.log(error);
   }
 });
-
-// Delete
 
 router.delete("/deleteTask/:id", async (req, res) => {
   try {
@@ -59,7 +49,6 @@ router.delete("/deleteTask/:id", async (req, res) => {
   }
 });
 
-// Get User's Task
 router.get("/getTasks/:id", async (req, res) => {
   const list = await List.find({ user: req.params.id }).sort({});
 
