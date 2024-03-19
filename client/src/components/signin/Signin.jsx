@@ -3,8 +3,9 @@ import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { authActions } from "../../store";
-import { toast } from "react-toastify";
 import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import "./Signin.css";
 
 const Signin = () => {
@@ -26,10 +27,10 @@ const Signin = () => {
       .post("http://localhost:8080/api/v1/signin", Inputs)
       .then((response) => {
         if (response.data.message === "Please Signup first!") {
-          toast.error(response.data.message);
+          toast.error("Please Signup first");
           history("/signup");
         } else if (response.data.message === "Incorrect Password") {
-          toast.warning(response.data.message);
+          toast.error("Incorrect Password");
         } else {
           sessionStorage.setItem("id", response.data.others._id);
           dispatch(authActions.login());
@@ -40,6 +41,7 @@ const Signin = () => {
 
   return (
     <div className="signin">
+      <ToastContainer />
       <div className="container">
         <div className="row">
           <div className="column col-lg-4 d-flex justify-content-center align-items-center">

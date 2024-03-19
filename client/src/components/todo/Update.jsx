@@ -1,7 +1,10 @@
 import React from "react";
 import { IoClose } from "react-icons/io5";
 
-const Update = ({ display }) => {
+const Update = ({ display, update }) => {
+  const updateChange = () => {
+    console.log("Flag");
+  };
   return (
     <div className="p-5 d-flex justify-content-center align-items-center flex-column update">
       <div className="update-heading justify-content-center">
@@ -17,7 +20,8 @@ const Update = ({ display }) => {
             type="radio"
             name="type"
             id="flexRadioDefault1_update"
-            value="Work"
+            value={update.type}
+            onChange={updateChange}
           />
           <label
             className="form-check-label"
@@ -32,7 +36,8 @@ const Update = ({ display }) => {
             type="radio"
             name="type"
             id="flexRadioDefault2_update"
-            value="Break"
+            value={update.type}
+            onChange={updateChange}
           />
           <label
             className="form-check-label"
@@ -48,6 +53,8 @@ const Update = ({ display }) => {
           type="number"
           id="timeInput_update"
           name="time"
+          value={update.time}
+          onChange={updateChange}
           placeholder="Time (in minutes)"
         />
       </div>
