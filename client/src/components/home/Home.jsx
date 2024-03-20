@@ -11,7 +11,7 @@ const Home = () => {
           <br />
           ultimate productivity ally.
         </h1>
-        <Link to="/signup">
+        <Link to="/todo">
           <button class="home-btn p-2">Pomodoro</button>
         </Link>
       </div>

@@ -1,25 +1,32 @@
 import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { toast } from "react-toastify";
 import { IoClose } from "react-icons/io5";
 
 const Update = ({ display, update }) => {
-  const [Inputs, setInputs] = useState({
-    type: update.type,
-    time: update.time,
-  });
-
   useEffect(() => {
-    setInputs({ type: update.type, time: update.time });
+    setInputs({
+      type: update.type,
+      time: update.time,
+    });
   }, [update]);
+  const [Inputs, setInputs] = useState({
+    type: "",
+    time: null,
+  });
 
   const updateChange = (e) => {
     const { name, value } = e.target;
     setInputs({ ...Inputs, [name]: value });
   };
 
-  const submit = () => {
-    console.log(Inputs);
+  const submit = async () => {
+    await axios
+      .put(`http://localhost:8080/api/v2/updateTask/${update._id}`, Inputs)
+      .then((response) => {
+        toast.success(response.data.message);
+      });
     display("none");
-    setInputs({ type: "", time: "" });
   };
 
   return (

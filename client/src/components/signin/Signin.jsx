@@ -26,9 +26,10 @@ const Signin = () => {
     await axios
       .post("http://localhost:8080/api/v1/signin", Inputs)
       .then((response) => {
-        if (response.data.message === "Please Signup first!") {
-          toast.error("Please Signup first");
-          history("/signup");
+        if (Inputs.email === "" || Inputs.password === "") {
+          toast.error("Empty Input");
+        } else if (response.data.message === "Please Signup first!") {
+          toast.error("No User found");
         } else if (response.data.message === "Incorrect Password") {
           toast.error("Incorrect Password");
         } else {

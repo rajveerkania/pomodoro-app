@@ -9,7 +9,6 @@ import "react-toastify/dist/ReactToastify.css";
 const Todo = () => {
   let toUpdateArray = [];
   let id = sessionStorage.getItem("id");
-
   const [formData, setFormData] = useState({ type: "", time: "" });
   const [todoArray, setTodoArray] = useState([]);
 
@@ -50,7 +49,7 @@ const Todo = () => {
           data: { id: id },
         })
         .then(() => {
-          toast.success("Task has been deleted");
+          toast.error("Task has been deleted");
         });
     } else {
       toast.error("Please signin first");
