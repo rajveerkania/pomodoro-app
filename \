@@ -64,11 +64,7 @@ const Todo = () => {
     toUpdateArray = Array[value];
   };
 
-  const pomodor = () => {
-    document.getElementById("pomodoro-div").style.display = "none";
-    document.getElementById("timer").style.display = "block";
-    document.getElementById("task-list").style.display = "none";
-  };
+  const pomodor = () => {};
 
   useEffect(() => {
     if (id) {
@@ -142,19 +138,19 @@ const Todo = () => {
           <div className="row">
             <div className="col-lg-8 col-md-12 col-sm-12">
               {Array.length > 0 && (
-                <div className="text-center p-3 mb-3" id="pomodoro-div">
+                <div className="text-center p-3 mb-3 pomodoro-div">
                   <button className="pomodoro-btn p-2" onClick={pomodor}>
                     Pomodoro
                   </button>
                 </div>
               )}
               <div className="row">
-                <div className="col" id="timer">
+                <div className="col timer">
                   <Timer />
                 </div>
               </div>
             </div>
-            <div className="col-lg-4 col-md-12 col-sm-12" id="task-list">
+            <div className="col-lg-4 col-md-12 col-sm-12">
               {Array &&
                 Array.map((item, index) => (
                   <div className="col p-3" key={index}>
