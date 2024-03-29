@@ -13,6 +13,50 @@ h1 {
   margin: 10px;
 }
 
+.pomodoro-btn {
+  border: none;
+  outline: none;
+  background-color: rgba(240, 0, 0, 0.87);
+  border-radius: 8px;
+  color: #ffffff !important;
+  font-weight: bold;
+}
+
+.dyn-container {
+  margin-top: 100px;
+}
+
+#pomodoro-div {
+  display: block;
+}
+
+#timer {
+  display: none;
+  margin: 10px auto 10px auto;
+  max-width: 50%;
+  max-height: 70%;
+}
+
+#task-list {
+  display: block;
+}
+
+.icon-container {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 15px;
+}
+
+.icon {
+  font-size: 24px;
+  margin: 0 8px;
+}
+
+.next-icon {
+  font-size: 35px;
+  margin: 0 8px;
+}
+
 .add-task-btn {
   background: #ffffff;
   max-width: 360px;

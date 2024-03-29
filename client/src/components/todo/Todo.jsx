@@ -2,33 +2,33 @@ import React, { useEffect, useState } from "react";
 import "./Todo.css";
 import TodoCards from "./TodoCards";
 import Update from "./Update";
+import Timer from "./Timer";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+let toUpdateArray = [];
+let id = sessionStorage.getItem("id");
 
 const Todo = () => {
-  let toUpdateArray = [];
-  let id = sessionStorage.getItem("id");
-  const [formData, setFormData] = useState({ type: "", time: "" });
-  const [todoArray, setTodoArray] = useState([]);
+  const [Inputs, setInputs] = useState({ type: "", time: null });
+  const [Array, setArray] = useState([]);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
-    setFormData({ ...formData, [name]: value });
+    setInputs({ ...Inputs, [name]: value });
   };
 
   const submit = async () => {
-    if (formData.type === "" || formData.time === "") {
+    if (Inputs.type === "" || Inputs.time === null) {
       toast.error("Empty Input!");
     } else {
       if (id) {
         await axios.post("http://localhost:8080/api/v2/addTask", {
-          type: formData.type,
-          time: formData.time,
+          type: Inputs.type,
+          time: Inputs.time,
           id: id,
         });
-        setTodoArray([...todoArray, formData]);
-        setFormData({ type: "", time: "" });
+        setInputs({ type: "", time: "" });
         document.getElementById("flexRadioDefault1").checked = false;
         document.getElementById("flexRadioDefault2").checked = false;
         document.getElementById("timeInput").value = null;
@@ -61,7 +61,14 @@ const Todo = () => {
   };
 
   const update = (value) => {
-    toUpdateArray = todoArray[value];
+    const tasktoUpdate = Array[value];
+    toUpdateArray = tasktoUpdate;
+  };
+
+  const pomodor = () => {
+    document.getElementById("pomodoro-div").style.display = "none";
+    document.getElementById("timer").style.display = "block";
+    document.getElementById("task-list").style.display = "none";
   };
 
   useEffect(() => {
@@ -70,7 +77,7 @@ const Todo = () => {
         await axios
           .get(`http://localhost:8080/api/v2/getTasks/${id}`)
           .then((response) => {
-            setTodoArray(response.data.tasks);
+            setArray(response.data.tasks);
           });
       };
       fetch();
@@ -132,12 +139,25 @@ const Todo = () => {
           </div>
         </div>
         {/* Dynamic Part */}
-        <div className="container">
+        <div className="container dyn-container">
           <div className="row">
-            <div className="col-lg-8 col-md-12 col-sm-12"></div>
-            <div className="col-lg-4 col-md-12 col-sm-12">
-              {todoArray &&
-                todoArray.map((item, index) => (
+            <div className="col-lg-8 col-md-12 col-sm-12">
+              {Array && (
+                <div className="text-center p-3 mb-3" id="pomodoro-div">
+                  <button className="pomodoro-btn p-2" onClick={pomodor}>
+                    Pomodoro
+                  </button>
+                </div>
+              )}
+              <div className="row">
+                <div className="col" id="timer">
+                  <Timer />
+                </div>
+              </div>
+            </div>
+            <div className="col-lg-4 col-md-12 col-sm-12" id="task-list">
+              {Array &&
+                Array.map((item, index) => (
                   <div className="col p-3" key={index}>
                     <TodoCards
                       type={item.type}

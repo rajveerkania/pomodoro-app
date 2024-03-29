@@ -4,15 +4,9 @@ import { toast } from "react-toastify";
 import { IoClose } from "react-icons/io5";
 
 const Update = ({ display, update }) => {
-  useEffect(() => {
-    setInputs({
-      type: update.type,
-      time: update.time,
-    });
-  }, [update]);
   const [Inputs, setInputs] = useState({
     type: "",
-    time: null,
+    time: "",
   });
 
   const updateChange = (e) => {
@@ -28,6 +22,13 @@ const Update = ({ display, update }) => {
       });
     display("none");
   };
+
+  useEffect(() => {
+    setInputs({
+      type: update.type,
+      time: update.time,
+    });
+  }, [update]);
 
   return (
     <div className="p-5 d-flex justify-content-center align-items-center flex-column update">
