@@ -1,33 +1,60 @@
-import React, { useState } from "react";
-import { CircularProgressbar } from "react-circular-progressbar";
+import React, { useState, useEffect } from "react";
+import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
-import { FaPlay, FaPause } from "react-icons/fa";
-import { MdSkipNext } from "react-icons/md";
 
-const Timer = () => {
+const Timer = ({ value, title, onNext, onDelete }) => {
+  const [secondsLeft, setSecondsLeft] = useState(value * 60);
   const [isRunning, setIsRunning] = useState(false);
-  const percentage = 60;
 
-  const toggleTimer = () => {
+  useEffect(() => {
+    let interval = null;
+    if (isRunning && secondsLeft > 0) {
+      interval = setInterval(() => {
+        setSecondsLeft((prevSeconds) => prevSeconds - 1);
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [isRunning, secondsLeft]);
+
+  useEffect(() => {
+    if (secondsLeft === 0) {
+      onDelete();
+    }
+  }, [secondsLeft, onDelete]);
+
+  const handlePlayPause = () => {
     setIsRunning(!isRunning);
   };
 
+  const handleNext = () => {
+    setIsRunning(false);
+    onNext();
+  };
+
+  const percentage = ((value * 60 - secondsLeft) / (value * 60)) * 100;
+
   return (
-    <div className="timer-div">
-      <CircularProgressbar value={percentage} text={`${percentage}%`} />
-      <div className="controls">
-        <div className="icon-container">
-          <div id="timer-play" onClick={toggleTimer}>
-            {isRunning ? (
-              <FaPause className="icon" />
-            ) : (
-              <FaPlay className="icon" />
-            )}
-          </div>
-          <div id="timer-next">
-            <MdSkipNext className="next-icon" />
-          </div>
+    <div>
+      <div className="timer-header">
+        <h2>{title}</h2>
+        <div className="timer-controls">
+          <button onClick={handlePlayPause}>
+            {isRunning ? "Pause" : "Play"}
+          </button>
+          <button onClick={handleNext}>Next</button>
         </div>
+      </div>
+      <div className="timer-progress">
+        <CircularProgressbar
+          value={percentage}
+          text={`${Math.floor(secondsLeft / 60)}:${secondsLeft % 60}`}
+          strokeWidth={12}
+          styles={buildStyles({
+            pathColor: "#007bff",
+            textColor: "#007bff",
+            trailColor: "#d6d6d6",
+          })}
+        />
       </div>
     </div>
   );

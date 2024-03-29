@@ -6,10 +6,10 @@ import Timer from "./Timer";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+let toUpdateArray = [];
+let id = sessionStorage.getItem("id");
 
 const Todo = () => {
-  let toUpdateArray = [];
-  let id = sessionStorage.getItem("id");
   const [Inputs, setInputs] = useState({ type: "", time: null });
   const [Array, setArray] = useState([]);
 
@@ -61,7 +61,8 @@ const Todo = () => {
   };
 
   const update = (value) => {
-    toUpdateArray = Array[value];
+    const tasktoUpdate = Array[value];
+    toUpdateArray = tasktoUpdate;
   };
 
   const pomodor = () => {
@@ -141,7 +142,7 @@ const Todo = () => {
         <div className="container dyn-container">
           <div className="row">
             <div className="col-lg-8 col-md-12 col-sm-12">
-              {Array.length > 0 && (
+              {Array && (
                 <div className="text-center p-3 mb-3" id="pomodoro-div">
                   <button className="pomodoro-btn p-2" onClick={pomodor}>
                     Pomodoro
