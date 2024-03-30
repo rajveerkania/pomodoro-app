@@ -69,6 +69,7 @@ const Todo = () => {
     document.getElementById("pomodoro-div").style.display = "none";
     document.getElementById("timer").style.display = "block";
     document.getElementById("task-list").style.display = "none";
+    document.getElementById("add-task").style.display = "none";
   };
 
   useEffect(() => {
@@ -90,8 +91,11 @@ const Todo = () => {
     <>
       <div className="todo">
         <ToastContainer />
-        <div className="todo-main container d-flex justify-content-center align-items-center">
-          <div className="add-task-btn align-items-center justify-content-center">
+        <div className="container d-flex justify-content-center align-items-center">
+          <div
+            className="add-task-btn align-items-center justify-content-center"
+            id="add-task"
+          >
             <h1 className="add-heading">Add Task</h1>
             <div className="radio-btn-div d-flex justify-content-center">
               <div className="form-check">
@@ -141,7 +145,7 @@ const Todo = () => {
         {/* Dynamic Part */}
         <div className="container dyn-container">
           <div className="row">
-            <div className="col-lg-8 col-md-12 col-sm-12">
+            <div className="col-lg-8 col-md-12 col-sm-12 align-items-center text-align-center">
               {Array && (
                 <div className="text-center p-3 mb-3" id="pomodoro-div">
                   <button className="pomodoro-btn p-2" onClick={pomodor}>
@@ -149,11 +153,6 @@ const Todo = () => {
                   </button>
                 </div>
               )}
-              <div className="row">
-                <div className="col" id="timer">
-                  <Timer />
-                </div>
-              </div>
             </div>
             <div className="col-lg-4 col-md-12 col-sm-12" id="task-list">
               {Array &&
@@ -173,6 +172,11 @@ const Todo = () => {
             </div>
           </div>
         </div>
+        {Array && (
+          <div className="col" id="timer">
+            <Timer tasks={Array} onDelete={del} />
+          </div>
+        )}
       </div>
 
       {/*Update Div*/}

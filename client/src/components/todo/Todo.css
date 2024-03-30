@@ -9,6 +9,10 @@ h1 {
   text-align: center;
 }
 
+#todomain {
+  display: block;
+}
+
 .add-heading {
   margin: 10px;
 }
@@ -28,13 +32,6 @@ h1 {
 
 #pomodoro-div {
   display: block;
-}
-
-#timer {
-  display: none;
-  margin: 10px auto 10px auto;
-  max-width: 50%;
-  max-height: 70%;
 }
 
 #task-list {
@@ -67,6 +64,10 @@ h1 {
   box-shadow:
     0 0 20px 0 rgba(0, 0, 0, 0.2),
     0 5px 5px 0 rgba(0, 0, 0, 0.24);
+}
+
+#add-task {
+  display: block;
 }
 
 .form-check {
@@ -117,6 +118,62 @@ h1 {
   color: rgba(240, 0, 0, 0.87);
 }
 
+#timer {
+  display: none;
+}
+
+.timer-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.timer-controls {
+  margin-top: 5vw;
+}
+
+.circular-progress-bar-container {
+  margin-top: 20px;
+}
+
+.timer-controls button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 4vw;
+  margin: 0 3vw;
+}
+
+.timer-display {
+  font-size: 5vw;
+  margin-top: 5vw;
+}
+
+.timer-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.timer-controls {
+  margin-top: 5vw;
+}
+
+.timer-controls button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 4vw;
+  margin: 0 3vw;
+}
+
+.timer-display {
+  font-size: 5vw;
+  margin-top: 5vw;
+}
+
 .todo-update {
   background-color: #f2f2f2;
   width: 40%;
@@ -154,7 +211,7 @@ h1 {
 }
 
 .close-btn:hover {
-  color: red; /* Change color on hover if desired */
+  color: red;
 }
 
 @media (max-width: 767px) {
