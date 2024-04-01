@@ -18,7 +18,9 @@ const Todo = () => {
     setInputs({ ...Inputs, [name]: value });
   };
 
-  const submit = async () => {
+  const [submit, setSubmit] = useState(false);
+  const onClickSubmit = async () => {
+    console.log("Flag");
     if (Inputs.type === "" || Inputs.time === null) {
       toast.error("Empty Input!");
     } else {
@@ -28,6 +30,7 @@ const Todo = () => {
           time: Inputs.time,
           id: id,
         });
+        setSubmit(true);
         setInputs({ type: "", time: "" });
         document.getElementById("flexRadioDefault1").checked = false;
         document.getElementById("flexRadioDefault2").checked = false;
@@ -136,7 +139,7 @@ const Todo = () => {
               />
             </div>
             <div className="button-div d-flex justify-content-center align-items-center">
-              <button className="add-btn p-2" onClick={submit}>
+              <button className="add-btn p-2" onClick={onClickSubmit}>
                 Add
               </button>
             </div>
