@@ -1,10 +1,13 @@
 import React, { useState, useEffect, useRef } from "react";
 import { FaPlay, FaPause, FaStepForward } from "react-icons/fa";
 import { CircularProgressbar } from "react-circular-progressbar";
+import task from "../../assets/task.mp3";
+import n_task from "../../assets/n_task.mp3";
+
 import "react-circular-progressbar/dist/styles.css";
 
-const Timer = ({ tasks, onDelete }) => {
-  const [timer, setTimer] = useState(null);
+const Timer = ({ tasks, taskCompleted, resetDisp }) => {
+  const arr_size = tasks.length;
   const [isRunning, setIsRunning] = useState(false);
   const [currentTaskIndex, setCurrentTaskIndex] = useState(0);
   const [progressTitle, setProgressTitle] = useState("");
@@ -30,16 +33,23 @@ const Timer = ({ tasks, onDelete }) => {
   }, [currentTask]);
 
   const startTimer = () => {
-    if (!isRunning) {
+    if (!isRunning && currentTask) {
       intervalRef.current = setInterval(() => {
         setProgressTime((prevTime) => {
           if (prevTime > 0) {
             return prevTime - 1;
           } else {
-            clearInterval(intervalRef.current);
-            setIsRunning(false);
-            onDelete(currentTaskIndex); // Call onDelete when the timer reaches 0
-            return prevTime;
+            if (currentTaskIndex === arr_size - 1) {
+              taskCompleted(tasks[currentTaskIndex]._id);
+
+              resetDisp();
+            } else {
+              clearInterval(intervalRef.current);
+              taskCompleted(tasks[currentTaskIndex]._id);
+              const nextIndex = (currentTaskIndex + 1) % tasks.length;
+              setCurrentTaskIndex(nextIndex);
+              return tasks[nextIndex].time * 60;
+            }
           }
         });
       }, 1000);
@@ -55,12 +65,14 @@ const Timer = ({ tasks, onDelete }) => {
   const nextTask = () => {
     clearInterval(intervalRef.current);
     setIsRunning(false);
-    setCurrentTaskIndex((prevIndex) => (prevIndex + 1) % tasks.length);
+    taskCompleted(tasks[currentTaskIndex]._id);
+    if (currentTaskIndex !== arr_size - 1) {
+      setCurrentTaskIndex((prevIndex) => (prevIndex + 1) % tasks.length);
+    } else {
+      taskCompleted(tasks[currentTaskIndex]._id);
+      resetDisp();
+    }
   };
-
-  useEffect(() => {
-    setCurrentTaskIndex(0);
-  }, [tasks]);
 
   const formatTime = (timeInSeconds) => {
     const minutes = Math.floor(timeInSeconds / 60);

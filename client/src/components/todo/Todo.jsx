@@ -12,30 +12,35 @@ let id = sessionStorage.getItem("id");
 const Todo = () => {
   const [Inputs, setInputs] = useState({ type: "", time: null });
   const [Array, setArray] = useState([]);
+  const [toggle, setToggle] = useState(false);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
     setInputs({ ...Inputs, [name]: value });
   };
 
-  const [submit, setSubmit] = useState(false);
   const onClickSubmit = async () => {
-    console.log("Flag");
     if (Inputs.type === "" || Inputs.time === null) {
       toast.error("Empty Input!");
     } else {
       if (id) {
-        await axios.post("http://localhost:8080/api/v2/addTask", {
-          type: Inputs.type,
-          time: Inputs.time,
-          id: id,
-        });
-        setSubmit(true);
-        setInputs({ type: "", time: "" });
-        document.getElementById("flexRadioDefault1").checked = false;
-        document.getElementById("flexRadioDefault2").checked = false;
-        document.getElementById("timeInput").value = null;
-        toast.success("Task has been added");
+        await axios
+          .post("http://localhost:8080/api/v2/addTask", {
+            type: Inputs.type,
+            time: Inputs.time,
+            id: id,
+          })
+          .then(() => {
+            setToggle((toggle) => !toggle);
+            setInputs({ type: "", time: "" });
+            document.getElementById("flexRadioDefault1").checked = false;
+            document.getElementById("flexRadioDefault2").checked = false;
+            document.getElementById("timeInput").value = null;
+            toast.success("Task has been added");
+          })
+          .catch((error) => {
+            console.error("Error: ", error);
+          });
       } else {
         document.getElementById("flexRadioDefault1").checked = false;
         document.getElementById("flexRadioDefault2").checked = false;
@@ -52,6 +57,7 @@ const Todo = () => {
           data: { id: id },
         })
         .then(() => {
+          setToggle((toggle) => !toggle);
           toast.error("Task has been deleted");
         });
     } else {
@@ -75,6 +81,24 @@ const Todo = () => {
     document.getElementById("add-task").style.display = "none";
   };
 
+  const reset_disp = () => {
+    document.getElementById("pomodoro-div").style.display = "block";
+    document.getElementById("timer").style.display = "none";
+    document.getElementById("task-list").style.display = "block";
+    document.getElementById("add-task").style.display = "block";
+    setToggle((toggle) => !toggle);
+  };
+
+  const task_completed = async (CardId) => {
+    if (id) {
+      await axios.delete(`http://localhost:8080/api/v2/deleteTask/${CardId}`, {
+        data: { id: id },
+      });
+    } else {
+      toast.error("Please signin first");
+    }
+  };
+
   useEffect(() => {
     if (id) {
       const fetch = async () => {
@@ -88,7 +112,7 @@ const Todo = () => {
     } else {
       toast.error("Please signin first");
     }
-  }, [submit]);
+  }, [toggle]);
 
   return (
     <>
@@ -177,7 +201,11 @@ const Todo = () => {
         </div>
         {Array && (
           <div className="col" id="timer">
-            <Timer tasks={Array} onDelete={del} />
+            <Timer
+              tasks={Array}
+              taskCompleted={task_completed}
+              resetDisp={reset_disp}
+            />
           </div>
         )}
       </div>
