@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { FaPlay, FaPause, FaStepForward } from "react-icons/fa";
 import { CircularProgressbar } from "react-circular-progressbar";
-import task from "../../assets/task.mp3";
-import n_task from "../../assets/n_task.mp3";
 
 import "react-circular-progressbar/dist/styles.css";
 
@@ -32,8 +30,9 @@ const Timer = ({ tasks, taskCompleted, resetDisp }) => {
     }
   }, [currentTask]);
 
-  const startTimer = () => {
+  const startTimer = async () => {
     if (!isRunning && currentTask) {
+      clearInterval(intervalRef.current);
       intervalRef.current = setInterval(() => {
         setProgressTime((prevTime) => {
           if (prevTime > 0) {
@@ -41,14 +40,25 @@ const Timer = ({ tasks, taskCompleted, resetDisp }) => {
           } else {
             if (currentTaskIndex === arr_size - 1) {
               taskCompleted(tasks[currentTaskIndex]._id);
-
               resetDisp();
             } else {
-              clearInterval(intervalRef.current);
+              //const nextIndex = currentTaskIndex + 1;
               taskCompleted(tasks[currentTaskIndex]._id);
-              const nextIndex = (currentTaskIndex + 1) % tasks.length;
-              setCurrentTaskIndex(nextIndex);
-              return tasks[nextIndex].time * 60;
+
+              setCurrentTaskIndex((currentTaskIndex) => {
+                console.log("Before increasing", currentTaskIndex);
+                currentTaskIndex = currentTaskIndex + 1;
+                console.log("After", currentTaskIndex);
+                return currentTaskIndex;
+              });
+              console.log(currentTaskIndex);
+              setProgressTitle(tasks[currentTaskIndex].type);
+              setProgressColor(
+                tasks[currentTaskIndex].type === "Work"
+                  ? "rgba(240, 0, 0, 0.87)"
+                  : "rgb(255, 255, 0)",
+              );
+              return tasks[currentTaskIndex].time * 60;
             }
           }
         });
