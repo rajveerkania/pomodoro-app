@@ -36,30 +36,28 @@ const Timer = ({ tasks, taskCompleted, resetDisp }) => {
       intervalRef.current = setInterval(() => {
         setProgressTime((prevTime) => {
           if (prevTime > 0) {
+            console.log("Hit 1");
             return prevTime - 1;
           } else {
-            if (currentTaskIndex === arr_size - 1) {
-              taskCompleted(tasks[currentTaskIndex]._id);
-              resetDisp();
-            } else {
-              //const nextIndex = currentTaskIndex + 1;
-              taskCompleted(tasks[currentTaskIndex]._id);
-
-              setCurrentTaskIndex((currentTaskIndex) => {
-                console.log("Before increasing", currentTaskIndex);
-                currentTaskIndex = currentTaskIndex + 1;
-                console.log("After", currentTaskIndex);
-                return currentTaskIndex;
+            if (currentTaskIndex < arr_size - 1) {
+              taskCompleted(tasks[currentTaskIndex]._id).then(() => {
+                setCurrentTaskIndex((prevIndex) => prevIndex + 1);
+                setProgressTitle(tasks[currentTaskIndex].type);
+                setProgressColor(
+                  tasks[currentTaskIndex].type === "Work"
+                    ? "rgba(240, 0, 0, 0.87)"
+                    : "rgb(255, 255, 0)",
+                );
+                console.log("Hit 2");
               });
-              console.log(currentTaskIndex);
-              setProgressTitle(tasks[currentTaskIndex].type);
-              setProgressColor(
-                tasks[currentTaskIndex].type === "Work"
-                  ? "rgba(240, 0, 0, 0.87)"
-                  : "rgb(255, 255, 0)",
-              );
-              return tasks[currentTaskIndex].time * 60;
+            } else {
+              taskCompleted(tasks[currentTaskIndex]._id).then(() => {
+                console.log("Hit 3");
+                setCurrentTaskIndex(0);
+                resetDisp();
+              });
             }
+            return 0;
           }
         });
       }, 1000);
@@ -73,14 +71,17 @@ const Timer = ({ tasks, taskCompleted, resetDisp }) => {
   };
 
   const nextTask = () => {
+    console.log("Hit from nextTask");
     clearInterval(intervalRef.current);
     setIsRunning(false);
-    taskCompleted(tasks[currentTaskIndex]._id);
-    if (currentTaskIndex !== arr_size - 1) {
-      setCurrentTaskIndex((prevIndex) => (prevIndex + 1) % tasks.length);
-    } else {
+    if (currentTaskIndex < arr_size - 1) {
+      setCurrentTaskIndex((prevIndex) => prevIndex + 1);
       taskCompleted(tasks[currentTaskIndex]._id);
-      resetDisp();
+    } else {
+      taskCompleted(tasks[currentTaskIndex]._id).then(() => {
+        setCurrentTaskIndex(0);
+        resetDisp();
+      });
     }
   };
 
@@ -89,6 +90,10 @@ const Timer = ({ tasks, taskCompleted, resetDisp }) => {
     const seconds = timeInSeconds % 60;
     return `${minutes < 10 ? "0" : ""}${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
   };
+
+  useEffect(() => {
+    console.log(currentTaskIndex);
+  }, [currentTaskIndex]);
 
   return (
     <div className="timer-container">

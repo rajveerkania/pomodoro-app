@@ -6,10 +6,11 @@ import Timer from "./Timer";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-let toUpdateArray = [];
-let id = sessionStorage.getItem("id");
 
 const Todo = () => {
+  let toUpdateArray = [];
+  let id = sessionStorage.getItem("id");
+
   const [Inputs, setInputs] = useState({ type: "", time: null });
   const [Array, setArray] = useState([]);
   const [toggle, setToggle] = useState(false);
@@ -86,14 +87,19 @@ const Todo = () => {
     document.getElementById("timer").style.display = "none";
     document.getElementById("task-list").style.display = "block";
     document.getElementById("add-task").style.display = "block";
+    toast.success("All tasks have been completed");
     setToggle((toggle) => !toggle);
   };
 
   const task_completed = async (CardId) => {
     if (id) {
-      await axios.delete(`http://localhost:8080/api/v2/deleteTask/${CardId}`, {
-        data: { id: id },
-      });
+      await axios
+        .delete(`http://localhost:8080/api/v2/deleteTask/${CardId}`, {
+          data: { id: id },
+        })
+        .then(() => {
+          setToggle((toggle) => !toggle);
+        });
     } else {
       toast.error("Please signin first");
     }
