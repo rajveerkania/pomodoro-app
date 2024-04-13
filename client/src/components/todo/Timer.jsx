@@ -3,7 +3,7 @@ import { FaPlay, FaPause, FaStepForward } from "react-icons/fa";
 import { CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 
-const Timer = ({ tasks, resetDisp }) => {
+const Timer = ({ tasks, resetDisp, delete_task }) => {
   const [currentTaskIndex, setCurrentTaskIndex] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
   const [time, setTime] = useState(0);
@@ -41,10 +41,9 @@ const Timer = ({ tasks, resetDisp }) => {
   const skipTask = () => {
     clearInterval(intervalRef.current);
     setIsRunning(false);
-    // write delete logic
-    // taskCompleted(tasks[currentTaskIndex]._id);
     setCurrentTaskIndex((prevIndex) => prevIndex + 1);
-    if (currentTaskIndex === tasks.length) {
+    if (currentTaskIndex === tasks.length - 1) {
+      setCurrentTaskIndex(0);
       resetDisp();
     } else {
       resetTimer();
@@ -52,11 +51,9 @@ const Timer = ({ tasks, resetDisp }) => {
   };
 
   const handleTaskCompletion = () => {
-    // write delete logic
-    // taskCompleted(tasks[currentTaskIndex]._id);
-    setCurrentTaskIndex((prevIndex) => prevIndex + 1);
     clearInterval(intervalRef.current);
     setIsRunning(false);
+    setCurrentTaskIndex((prevIndex) => prevIndex + 1);
     if (currentTaskIndex === tasks.length - 1) {
       resetDisp();
     } else {
@@ -78,9 +75,7 @@ const Timer = ({ tasks, resetDisp }) => {
     }${seconds}`;
   };
 
-  // const currentTask = tasks[currentTaskIndex];
-
-  if (!tasks[currentTaskIndex]) return null; // Handle no tasks case
+  if (!tasks[currentTaskIndex]) return null;
 
   return (
     <div className="timer-container">

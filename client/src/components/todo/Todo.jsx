@@ -81,7 +81,17 @@ const Todo = () => {
     document.getElementById("add-task").style.display = "none";
   };
 
-  const reset_disp = () => {
+  const delete_task = async (task_id) => {
+    await axios
+      .delete(`http://localhost:8080/api/v2/deleteTask/${task_id}`, {
+        data: { id: id },
+      })
+      .then(() => {
+        setToggle((toggle) => !toggle);
+      });
+  };
+
+  const reset_disp = async () => {
     document.getElementById("pomodoro-div").style.display = "block";
     document.getElementById("timer").style.display = "none";
     document.getElementById("task-list").style.display = "block";
@@ -192,7 +202,11 @@ const Todo = () => {
         </div>
         {Array && (
           <div className="col" id="timer">
-            <Timer tasks={Array} resetDisp={reset_disp} />
+            <Timer
+              tasks={Array}
+              resetDisp={reset_disp}
+              delete_task={delete_task}
+            />
           </div>
         )}
       </div>
