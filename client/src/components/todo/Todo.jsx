@@ -6,33 +6,42 @@ import Timer from "./Timer";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-let toUpdateArray = [];
-let id = sessionStorage.getItem("id");
 
 const Todo = () => {
+  let id = sessionStorage.getItem("id");
+
   const [Inputs, setInputs] = useState({ type: "", time: null });
   const [Array, setArray] = useState([]);
+  const [toUpdateArray, setToUpdateArray] = useState([]);
+  const [toggle, setToggle] = useState(false);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
     setInputs({ ...Inputs, [name]: value });
   };
 
-  const submit = async () => {
+  const onClickSubmit = async () => {
     if (Inputs.type === "" || Inputs.time === null) {
       toast.error("Empty Input!");
     } else {
       if (id) {
-        await axios.post("http://localhost:8080/api/v2/addTask", {
-          type: Inputs.type,
-          time: Inputs.time,
-          id: id,
-        });
-        setInputs({ type: "", time: "" });
-        document.getElementById("flexRadioDefault1").checked = false;
-        document.getElementById("flexRadioDefault2").checked = false;
-        document.getElementById("timeInput").value = null;
-        toast.success("Task has been added");
+        await axios
+          .post("http://localhost:8080/api/v2/addTask", {
+            type: Inputs.type,
+            time: Inputs.time,
+            id: id,
+          })
+          .then(() => {
+            setToggle((toggle) => !toggle);
+            setInputs({ type: "", time: "" });
+            document.getElementById("flexRadioDefault1").checked = false;
+            document.getElementById("flexRadioDefault2").checked = false;
+            document.getElementById("timeInput").value = null;
+            toast.success("Task has been added");
+          })
+          .catch((error) => {
+            console.error("Error: ", error);
+          });
       } else {
         document.getElementById("flexRadioDefault1").checked = false;
         document.getElementById("flexRadioDefault2").checked = false;
@@ -49,6 +58,7 @@ const Todo = () => {
           data: { id: id },
         })
         .then(() => {
+          setToggle((toggle) => !toggle);
           toast.error("Task has been deleted");
         });
     } else {
@@ -61,8 +71,7 @@ const Todo = () => {
   };
 
   const update = (value) => {
-    const tasktoUpdate = Array[value];
-    toUpdateArray = tasktoUpdate;
+    setToUpdateArray(Array[value]);
   };
 
   const pomodor = () => {
@@ -72,20 +81,29 @@ const Todo = () => {
     document.getElementById("add-task").style.display = "none";
   };
 
+  const reset_disp = () => {
+    document.getElementById("pomodoro-div").style.display = "block";
+    document.getElementById("timer").style.display = "none";
+    document.getElementById("task-list").style.display = "block";
+    document.getElementById("add-task").style.display = "block";
+    toast.success("All tasks have been completed");
+    setToggle((toggle) => !toggle);
+  };
+  const fetch = async () => {
+    await axios
+      .get(`http://localhost:8080/api/v2/getTasks/${id}`)
+      .then((response) => {
+        setArray(response.data.tasks);
+      });
+  };
+
   useEffect(() => {
     if (id) {
-      const fetch = async () => {
-        await axios
-          .get(`http://localhost:8080/api/v2/getTasks/${id}`)
-          .then((response) => {
-            setArray(response.data.tasks);
-          });
-      };
       fetch();
     } else {
       toast.error("Please signin first");
     }
-  }, [submit]);
+  }, [toggle]);
 
   return (
     <>
@@ -136,7 +154,7 @@ const Todo = () => {
               />
             </div>
             <div className="button-div d-flex justify-content-center align-items-center">
-              <button className="add-btn p-2" onClick={submit}>
+              <button className="add-btn p-2" onClick={onClickSubmit}>
                 Add
               </button>
             </div>
@@ -174,14 +192,14 @@ const Todo = () => {
         </div>
         {Array && (
           <div className="col" id="timer">
-            <Timer tasks={Array} onDelete={del} />
+            <Timer tasks={Array} resetDisp={reset_disp} />
           </div>
         )}
       </div>
 
       {/*Update Div*/}
       <div className="todo-update" id="todo-update">
-        <Update display={disp} update={toUpdateArray} />
+        <Update display={disp} update={toUpdateArray} fetch={fetch} />
       </div>
     </>
   );
