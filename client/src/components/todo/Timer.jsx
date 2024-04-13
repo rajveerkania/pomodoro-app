@@ -3,77 +3,34 @@ import { FaPlay, FaPause, FaStepForward } from "react-icons/fa";
 import { CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 
-const Timer = ({ tasks, taskCompleted, resetDisp }) => {
-  const arr_size = tasks.length;
-  const [isRunning, setIsRunning] = useState(false);
+const Timer = ({ tasks, resetDisp }) => {
   const [currentTaskIndex, setCurrentTaskIndex] = useState(0);
-  const [progressTitle, setProgressTitle] = useState("");
-  const [progressTime, setProgressTime] = useState(0);
-  const [progressColor, setProgressColor] = useState("rgba(240, 0, 0, 0.87)");
+  const [isRunning, setIsRunning] = useState(false);
+  const [time, setTime] = useState(0);
 
-  const initialProgressTimeRef = useRef(progressTime);
   const intervalRef = useRef();
 
-  const [currentTask, setCurrentTask] = useState(null);
   useEffect(() => {
-    if (currentTaskIndex >= 0 && currentTaskIndex < arr_size) {
-      setCurrentTask(tasks[currentTaskIndex]);
-      if (currentTaskIndex === arr_size - 1) {
-        clearInterval(intervalRef.current);
-        setIsRunning(false);
-        console.log("Timer stopped");
-      }
+    if (currentTaskIndex >= 0 && currentTaskIndex < tasks.length) {
+      setTime(tasks[currentTaskIndex].time * 60);
     }
   }, [currentTaskIndex, tasks]);
 
   useEffect(() => {
-    if (currentTask) {
-      setProgressTitle(currentTask.type);
-      setProgressTime(currentTask.time * 60);
-      initialProgressTimeRef.current = currentTask.time * 60;
-      setProgressColor(
-        currentTask.type === "Work"
-          ? "rgba(240, 0, 0, 0.87)"
-          : "rgb(255, 255, 0)",
-      );
-    }
-  }, [currentTask]);
+    return () => clearInterval(intervalRef.current);
+  }, []);
 
-  const startTimer = async () => {
-    if (!isRunning && currentTask) {
-      clearInterval(intervalRef.current);
-      setIsRunning(false);
-      intervalRef.current = setInterval(() => {
-        setProgressTime((prevTime) => {
-          if (prevTime > 0) {
-            return prevTime - 1;
-          } else {
-            if (currentTaskIndex < arr_size - 1) {
-              taskCompleted(tasks[currentTaskIndex]._id).then(() => {
-                if (currentTaskIndex < arr_size - 1) {
-                  setCurrentTaskIndex((prevIndex) => prevIndex + 1);
-                }
-                setProgressTitle(tasks[currentTaskIndex].type);
-                setProgressColor(
-                  tasks[currentTaskIndex].type === "Work"
-                    ? "rgba(240, 0, 0, 0.87)"
-                    : "rgb(255, 255, 0)",
-                );
-              });
-            } else {
-              taskCompleted(tasks[currentTaskIndex]._id).then(() => {
-                setCurrentTaskIndex(0);
-                resetDisp();
-                setIsRunning(false);
-                return 0;
-              });
-            }
-            return 0;
-          }
-        });
-      }, 1000);
-      setIsRunning(true);
-    }
+  const startTimer = () => {
+    setIsRunning(true);
+    intervalRef.current = setInterval(() => {
+      setTime((prevTime) => {
+        if (prevTime === 0) {
+          handleTaskCompletion();
+          return 0;
+        }
+        return prevTime - 1;
+      });
+    }, 1000);
   };
 
   const pauseTimer = () => {
@@ -81,65 +38,85 @@ const Timer = ({ tasks, taskCompleted, resetDisp }) => {
     setIsRunning(false);
   };
 
-  const nextTask = () => {
+  const skipTask = () => {
     clearInterval(intervalRef.current);
     setIsRunning(false);
-    if (currentTaskIndex < arr_size - 1) {
-      setCurrentTaskIndex((prevIndex) => prevIndex + 1);
-      taskCompleted(tasks[currentTaskIndex]._id);
+    // write delete logic
+    // taskCompleted(tasks[currentTaskIndex]._id);
+    setCurrentTaskIndex((prevIndex) => prevIndex + 1);
+    if (currentTaskIndex === tasks.length) {
+      resetDisp();
     } else {
-      taskCompleted(tasks[currentTaskIndex]._id).then(() => {
-        setCurrentTaskIndex(0);
-        resetDisp();
-      });
+      resetTimer();
+    }
+  };
+
+  const handleTaskCompletion = () => {
+    // write delete logic
+    // taskCompleted(tasks[currentTaskIndex]._id);
+    setCurrentTaskIndex((prevIndex) => prevIndex + 1);
+    clearInterval(intervalRef.current);
+    setIsRunning(false);
+    if (currentTaskIndex === tasks.length - 1) {
+      resetDisp();
+    } else {
+      resetTimer();
+    }
+  };
+
+  const resetTimer = () => {
+    if (currentTaskIndex < tasks.length) {
+      setTime(tasks[currentTaskIndex].time * 60);
     }
   };
 
   const formatTime = (timeInSeconds) => {
     const minutes = Math.floor(timeInSeconds / 60);
     const seconds = timeInSeconds % 60;
-    return `${minutes < 10 ? "0" : ""}${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+    return `${minutes < 10 ? "0" : ""}${minutes}:${
+      seconds < 10 ? "0" : ""
+    }${seconds}`;
   };
 
-  useEffect(() => {}, [currentTaskIndex]);
+  // const currentTask = tasks[currentTaskIndex];
 
-  console.log("current task index", currentTaskIndex);
-  console.log("current task", currentTask);
+  if (!tasks[currentTaskIndex]) return null; // Handle no tasks case
 
   return (
     <div className="timer-container">
-      {true && (
-        <>
-          <h1>{progressTitle}</h1>
-          <div className="circular-progress-bar-container">
-            <CircularProgressbar
-              value={(progressTime / initialProgressTimeRef.current) * 100}
-              text={formatTime(progressTime)}
-              styles={{
-                path: {
-                  stroke: progressColor,
-                  strokeLinecap: "round",
-                },
-                trail: {
-                  stroke: "#f2f2f2",
-                },
-                text: {
-                  dominantBaseline: "middle",
-                  fill: "#000",
-                },
-              }}
-            />
-          </div>
-          <div className="timer-controls">
-            <button onClick={isRunning ? pauseTimer : startTimer}>
-              {isRunning ? <FaPause /> : <FaPlay />}
-            </button>
-            <button onClick={nextTask}>
-              <FaStepForward />
-            </button>
-          </div>
-        </>
-      )}
+      <>
+        <h1>{tasks[currentTaskIndex].type}</h1>
+        <div className="circular-progress-bar-container">
+          <CircularProgressbar
+            value={(time / (tasks[currentTaskIndex].time * 60)) * 100}
+            text={formatTime(time)}
+            styles={{
+              path: {
+                stroke:
+                  tasks[currentTaskIndex].type === "Break"
+                    ? "rgb(255, 255, 0)"
+                    : "rgba(240, 0, 0, 0.87)",
+                strokeLinecap: "round",
+              },
+              trail: {
+                stroke: "#f2f2f2",
+              },
+              text: {
+                dominantBaseline: "middle",
+                fill: "#000",
+              },
+            }}
+          />
+        </div>
+        <div className="timer-controls">
+          <button onClick={isRunning ? pauseTimer : startTimer}>
+            {isRunning ? <FaPause /> : <FaPlay />}
+          </button>
+          <button onClick={skipTask}>
+            <FaStepForward />
+          </button>
+        </div>
+      </>
     </div>
   );
 };

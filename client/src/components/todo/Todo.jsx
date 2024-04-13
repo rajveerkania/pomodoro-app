@@ -89,30 +89,16 @@ const Todo = () => {
     toast.success("All tasks have been completed");
     setToggle((toggle) => !toggle);
   };
-
-  const task_completed = async (CardId) => {
-    if (id) {
-      await axios
-        .delete(`http://localhost:8080/api/v2/deleteTask/${CardId}`, {
-          data: { id: id },
-        })
-        .then(() => {
-          setToggle((toggle) => !toggle);
-        });
-    } else {
-      toast.error("Please signin first");
-    }
+  const fetch = async () => {
+    await axios
+      .get(`http://localhost:8080/api/v2/getTasks/${id}`)
+      .then((response) => {
+        setArray(response.data.tasks);
+      });
   };
 
   useEffect(() => {
     if (id) {
-      const fetch = async () => {
-        await axios
-          .get(`http://localhost:8080/api/v2/getTasks/${id}`)
-          .then((response) => {
-            setArray(response.data.tasks);
-          });
-      };
       fetch();
     } else {
       toast.error("Please signin first");
@@ -206,18 +192,14 @@ const Todo = () => {
         </div>
         {Array && (
           <div className="col" id="timer">
-            <Timer
-              tasks={Array}
-              taskCompleted={task_completed}
-              resetDisp={reset_disp}
-            />
+            <Timer tasks={Array} resetDisp={reset_disp} />
           </div>
         )}
       </div>
 
       {/*Update Div*/}
       <div className="todo-update" id="todo-update">
-        <Update display={disp} update={toUpdateArray} />
+        <Update display={disp} update={toUpdateArray} fetch={fetch} />
       </div>
     </>
   );

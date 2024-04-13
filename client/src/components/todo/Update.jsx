@@ -3,7 +3,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { IoClose } from "react-icons/io5";
 
-const Update = ({ display, update }) => {
+const Update = ({ display, update, fetch }) => {
   const [Inputs, setInputs] = useState({
     type: "",
     time: "",
@@ -19,6 +19,9 @@ const Update = ({ display, update }) => {
       .put(`http://localhost:8080/api/v2/updateTask/${update._id}`, Inputs)
       .then((response) => {
         toast.success(response.data.message);
+      })
+      .then(() => {
+        fetch();
       });
     display("none");
   };
