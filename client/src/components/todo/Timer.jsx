@@ -1,12 +1,17 @@
 import React, { useState, useEffect, useRef } from "react";
+import axios from "axios";
 import { FaPlay, FaPause, FaStepForward } from "react-icons/fa";
 import { CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
+import single_bell from "../../assets/single_bell.mp3";
+import double_bell from "../../assets/double_bell.mp3";
+import skip from "../../assets/skip.mp3";
 
 const Timer = ({ tasks, resetDisp }) => {
   const [currentTaskIndex, setCurrentTaskIndex] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
   const [time, setTime] = useState(0);
+  const [audio, setAudio] = useState(null);
 
   const intervalRef = useRef();
 
@@ -19,6 +24,28 @@ const Timer = ({ tasks, resetDisp }) => {
   useEffect(() => {
     return () => clearInterval(intervalRef.current);
   }, []);
+
+  const playAudio = (audioFile) => {
+    const newAudio = new Audio(audioFile);
+    newAudio.play();
+    setAudio(newAudio);
+
+    newAudio.addEventListener("ended", () => {
+      setAudio(null);
+    });
+  };
+
+  const deleteTask = async () => {
+    const taskToDeleteId = tasks[currentTaskIndex]._id;
+    try {
+      await axios.delete(
+        `http://localhost:8080/api/v2/deleteTask/${taskToDeleteId}`,
+        {
+          data: { id: sessionStorage.getItem("id") },
+        },
+      );
+    } catch (error) {}
+  };
 
   const startTimer = () => {
     setIsRunning(true);
@@ -41,10 +68,12 @@ const Timer = ({ tasks, resetDisp }) => {
   const skipTask = () => {
     clearInterval(intervalRef.current);
     setIsRunning(false);
-    // write delete logic
-    // taskCompleted(tasks[currentTaskIndex]._id);
+    deleteTask();
+    playAudio(skip);
     setCurrentTaskIndex((prevIndex) => prevIndex + 1);
-    if (currentTaskIndex === tasks.length) {
+    if (currentTaskIndex === tasks.length - 1) {
+      setCurrentTaskIndex(0);
+      playAudio(double_bell);
       resetDisp();
     } else {
       resetTimer();
@@ -52,12 +81,13 @@ const Timer = ({ tasks, resetDisp }) => {
   };
 
   const handleTaskCompletion = () => {
-    // write delete logic
-    // taskCompleted(tasks[currentTaskIndex]._id);
-    setCurrentTaskIndex((prevIndex) => prevIndex + 1);
     clearInterval(intervalRef.current);
     setIsRunning(false);
+    deleteTask();
+    playAudio(single_bell);
+    setCurrentTaskIndex((prevIndex) => prevIndex + 1);
     if (currentTaskIndex === tasks.length - 1) {
+      playAudio(double_bell);
       resetDisp();
     } else {
       resetTimer();
@@ -78,9 +108,7 @@ const Timer = ({ tasks, resetDisp }) => {
     }${seconds}`;
   };
 
-  // const currentTask = tasks[currentTaskIndex];
-
-  if (!tasks[currentTaskIndex]) return null; // Handle no tasks case
+  if (!tasks[currentTaskIndex]) return null;
 
   return (
     <div className="timer-container">
