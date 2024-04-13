@@ -8,11 +8,11 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const Todo = () => {
-  let toUpdateArray = [];
   let id = sessionStorage.getItem("id");
 
   const [Inputs, setInputs] = useState({ type: "", time: null });
   const [Array, setArray] = useState([]);
+  const [toUpdateArray, setToUpdateArray] = useState([]);
   const [toggle, setToggle] = useState(false);
 
   const handleChange = (event) => {
@@ -71,8 +71,7 @@ const Todo = () => {
   };
 
   const update = (value) => {
-    const tasktoUpdate = Array[value];
-    toUpdateArray = tasktoUpdate;
+    setToUpdateArray(Array[value]);
   };
 
   const pomodor = () => {
