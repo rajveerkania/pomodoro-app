@@ -21,7 +21,7 @@ const Todo = () => {
   };
 
   const onClickSubmit = async () => {
-    if (Inputs.type === "" || Inputs.time === null) {
+    if (Inputs.type === "" || Inputs.time == null) {
       toast.error("Empty Input!");
     } else {
       if (id) {
@@ -81,23 +81,14 @@ const Todo = () => {
     document.getElementById("add-task").style.display = "none";
   };
 
-  const delete_task = async (task_id) => {
-    await axios
-      .delete(`http://localhost:8080/api/v2/deleteTask/${task_id}`, {
-        data: { id: id },
-      })
-      .then(() => {
-        setToggle((toggle) => !toggle);
-      });
-  };
-
   const reset_disp = async () => {
-    document.getElementById("pomodoro-div").style.display = "block";
-    document.getElementById("timer").style.display = "none";
-    document.getElementById("task-list").style.display = "block";
-    document.getElementById("add-task").style.display = "block";
-    toast.success("All tasks have been completed");
-    setToggle((toggle) => !toggle);
+    fetch().then(() => {
+      document.getElementById("pomodoro-div").style.display = "block";
+      document.getElementById("timer").style.display = "none";
+      document.getElementById("task-list").style.display = "block";
+      document.getElementById("add-task").style.display = "block";
+      toast.success("All tasks have been completed");
+    });
   };
   const fetch = async () => {
     await axios
@@ -202,11 +193,7 @@ const Todo = () => {
         </div>
         {Array && (
           <div className="col" id="timer">
-            <Timer
-              tasks={Array}
-              resetDisp={reset_disp}
-              delete_task={delete_task}
-            />
+            <Timer tasks={Array} resetDisp={reset_disp} />
           </div>
         )}
       </div>
