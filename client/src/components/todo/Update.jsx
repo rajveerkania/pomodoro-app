@@ -26,12 +26,19 @@ const Update = ({ display, update, fetch }) => {
     display("none");
   };
 
-  useEffect(() => {
+useEffect(() => {
+  if (update) {
     setInputs({
-      type: update.type,
-      time: update.time,
+      type: update.type || "",
+      time: update.time || "",
     });
-  }, [update]);
+  } else {
+    setInputs({
+      type: "",
+      time: "",
+    });
+  }
+}, [update]);
 
   return (
     <div className="p-5 d-flex justify-content-center align-items-center flex-column update">

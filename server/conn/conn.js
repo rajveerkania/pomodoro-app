@@ -1,9 +1,10 @@
+const dotenv = require("dotenv");
 const mongoose = require("mongoose");
+dotenv.config();
 
 const conn = async (req, res) => {
   try {
-    await mongoose
-    .connect("mongodb+srv://pomodoro-app:zn4IB2IHFClfFWzW@cluster0.vywnfeb.mongodb.net/").then(() =>{
+    await mongoose.connect(process.env.MONGODB_URL).then(() => {
       console.log("Connected to Database");
     });
   } catch (error) {
@@ -12,4 +13,3 @@ const conn = async (req, res) => {
 };
 
 conn();
-

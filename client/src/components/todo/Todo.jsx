@@ -10,7 +10,7 @@ import "react-toastify/dist/ReactToastify.css";
 const Todo = () => {
   let id = sessionStorage.getItem("id");
 
-  const [Inputs, setInputs] = useState({ type: "", time: null });
+  const [Inputs, setInputs] = useState({ type: "", time: "" });
   const [Array, setArray] = useState([]);
   const [toUpdateArray, setToUpdateArray] = useState([]);
   const [toggle, setToggle] = useState(false);
@@ -21,7 +21,7 @@ const Todo = () => {
   };
 
   const onClickSubmit = async () => {
-    if (Inputs.type === "" || Inputs.time == null) {
+    if (Inputs.type === "" || Inputs.time === "") {
       toast.error("Empty Input!");
     } else {
       if (id) {
@@ -36,7 +36,7 @@ const Todo = () => {
             setInputs({ type: "", time: "" });
             document.getElementById("flexRadioDefault1").checked = false;
             document.getElementById("flexRadioDefault2").checked = false;
-            document.getElementById("timeInput").value = null;
+            document.getElementById("timeInput").value = "";
             toast.success("Task has been added");
           })
           .catch((error) => {
@@ -45,13 +45,13 @@ const Todo = () => {
       } else {
         document.getElementById("flexRadioDefault1").checked = false;
         document.getElementById("flexRadioDefault2").checked = false;
-        document.getElementById("timeInput").value = null;
+        document.getElementById("timeInput").value = "";
         toast.error("Please signin to save the task");
       }
     }
   };
 
-  const del = async (CardId) => {
+  const deleteTask = async (CardId) => {
     if (id) {
       await axios
         .delete(`http://localhost:8080/api/v2/deleteTask/${CardId}`, {
@@ -66,11 +66,11 @@ const Todo = () => {
     }
   };
 
-  const disp = (value) => {
+  const display = (value) => {
     document.getElementById("todo-update").style.display = value;
   };
 
-  const update = (value) => {
+  const updateTask = (value) => {
     setToUpdateArray(Array[value]);
   };
 
@@ -81,16 +81,16 @@ const Todo = () => {
     document.getElementById("add-task").style.display = "none";
   };
 
-  const reset_disp = async () => {
-    fetch().then(() => {
-      document.getElementById("pomodoro-div").style.display = "block";
-      document.getElementById("timer").style.display = "none";
-      document.getElementById("task-list").style.display = "block";
-      document.getElementById("add-task").style.display = "block";
-      toast.success("All tasks have been completed");
-    });
+  const resetDisplay = async () => {
+    document.getElementById("pomodoro-div").style.display = "block";
+    document.getElementById("timer").style.display = "none";
+    document.getElementById("task-list").style.display = "block";
+    document.getElementById("add-task").style.display = "block";
+    toast.success("All tasks have been completed");
   };
+
   const fetch = async () => {
+    console.log("fetched");
     await axios
       .get(`http://localhost:8080/api/v2/getTasks/${id}`)
       .then((response) => {
@@ -181,10 +181,10 @@ const Todo = () => {
                       type={item.type}
                       time={item.time}
                       id={item._id}
-                      delId={del}
-                      display={disp}
+                      delId={deleteTask}
+                      display={display}
                       updateId={index}
-                      toBeUpdated={update}
+                      toBeUpdated={updateTask}
                     />
                   </div>
                 ))}
@@ -193,14 +193,14 @@ const Todo = () => {
         </div>
         {Array && (
           <div className="col" id="timer">
-            <Timer tasks={Array} resetDisp={reset_disp} />
+            <Timer tasks={Array} resetDisplay={resetDisplay} />
           </div>
         )}
       </div>
 
       {/*Update Div*/}
       <div className="todo-update" id="todo-update">
-        <Update display={disp} update={toUpdateArray} fetch={fetch} />
+        <Update display={display} update={toUpdateArray} fetch={fetch} />
       </div>
     </>
   );
