@@ -7,16 +7,18 @@ import single_bell from "../../assets/single_bell.mp3";
 import double_bell from "../../assets/double_bell.mp3";
 import skip from "../../assets/skip.mp3";
 
-const Timer = ({ tasks, resetDisp }) => {
+const Timer = ({ tasks, resetDisplay }) => {
   const [currentTaskIndex, setCurrentTaskIndex] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
   const [time, setTime] = useState(0);
   const [audio, setAudio] = useState(null);
-
   const intervalRef = useRef();
+  const tasksSize = tasks.length;
+
+
 
   useEffect(() => {
-    if (currentTaskIndex >= 0 && currentTaskIndex < tasks.length) {
+    if (currentTaskIndex >= 0 && currentTaskIndex < tasksSize) {
       setTime(tasks[currentTaskIndex].time * 60);
     }
   }, [currentTaskIndex, tasks]);
@@ -71,10 +73,10 @@ const Timer = ({ tasks, resetDisp }) => {
     deleteTask();
     playAudio(skip);
     setCurrentTaskIndex((prevIndex) => prevIndex + 1);
-    if (currentTaskIndex === tasks.length - 1) {
+    if (currentTaskIndex === tasksSize - 1) {
       setCurrentTaskIndex(0);
       playAudio(double_bell);
-      resetDisp();
+      resetDisplay();
     } else {
       resetTimer();
     }
@@ -85,19 +87,17 @@ const Timer = ({ tasks, resetDisp }) => {
     setIsRunning(false);
     deleteTask();
     playAudio(single_bell);
-    setCurrentTaskIndex((prevIndex) => prevIndex + 1);
-    if (currentTaskIndex === tasks.length - 1) {
+    if (currentTaskIndex === tasksSize - 1) {
       playAudio(double_bell);
-      resetDisp();
+      resetDisplay();
     } else {
+      setCurrentTaskIndex((prevIndex) => prevIndex + 1);
       resetTimer();
     }
   };
 
   const resetTimer = () => {
-    if (currentTaskIndex < tasks.length) {
       setTime(tasks[currentTaskIndex].time * 60);
-    }
   };
 
   const formatTime = (timeInSeconds) => {

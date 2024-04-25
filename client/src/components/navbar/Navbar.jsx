@@ -2,20 +2,13 @@ import React from "react";
 import "../navbar/Navbar.css";
 import { GiWhiteBook } from "react-icons/gi";
 import { useSelector } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { authActions } from "../../store";
 
 const Navbar = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const isLoggedIn = useSelector((state) => state.isLoggedIn);
-
-  const logout = () => {
-    sessionStorage.clear("id");
-    dispatch(authActions.logout());
-    navigate("/");
-  };
 
   return (
     <div>
@@ -91,8 +84,11 @@ const Navbar = () => {
                     <Link
                       className=" nav-link active nav-btn"
                       aria-current="page"
-                      to="#"
-                      onClick={logout}
+                      to={"/"}
+                      onClick={() => {
+                        sessionStorage.clear("id");
+                        dispatch(authActions.logout());
+                      }}
                     >
                       Logout
                     </Link>

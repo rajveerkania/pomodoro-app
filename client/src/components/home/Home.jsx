@@ -12,7 +12,7 @@ const Home = () => {
           ultimate productivity ally.
         </h1>
         <Link to="/todo">
-          <button class="home-btn p-2">Pomodoro</button>
+          <button className="home-btn p-2">Pomodoro</button>
         </Link>
       </div>
     </div>

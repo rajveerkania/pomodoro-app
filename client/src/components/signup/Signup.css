@@ -56,3 +56,17 @@
   color: rgba(240, 0, 0, 0.87);
   text-decoration: none;
 }
+
+.checkbox {
+  width: 10% !important;
+}
+
+.checkbox-container {
+  text-align: left !important;
+  margin: 4px auto 4px auto !important;
+}
+
+.checkbox-label {
+  margin-left: 8px;
+  color: #b3b3b3;
+}

@@ -13,10 +13,15 @@ const Signup = () => {
     email: "",
     password: "",
   });
+  const [showPassword, setShowPassword] = useState(false);
 
   const change = (e) => {
     const { name, value } = e.target;
     setInputs({ ...Inputs, [name]: value });
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
   };
 
   const submit = async (e) => {
@@ -75,14 +80,29 @@ const Signup = () => {
                 <input
                   className="p-2 my-3"
                   name="password"
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   placeholder="Password"
                   onChange={change}
                   value={Inputs.password}
                 />
+                <div className="checkbox-container">
+                  <input
+                    className="checkbox"
+                    type="checkbox"
+                    id="showPassword"
+                    checked={showPassword}
+                    onChange={togglePasswordVisibility}
+                  />
+                  <label className="checkbox-label" htmlFor="showPassword">
+                    Show Password
+                  </label>
+                </div>
                 <button onClick={submit}>SIGNUP</button>
                 <p className="message">
-                  Already registered? <Link to="/signin">Sign In</Link>
+                  Already registered?{" "}
+                  <Link to="/signin">
+                    <b>Sign In</b>
+                  </Link>
                 </p>
               </form>
             </div>
