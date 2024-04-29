@@ -15,10 +15,8 @@ const Timer = ({ tasks, resetDisplay }) => {
   const intervalRef = useRef();
   const tasksSize = tasks.length;
 
-
-
   useEffect(() => {
-    if (currentTaskIndex >= 0 && currentTaskIndex < tasksSize) {
+    if (currentTaskIndex >= 0 && currentTaskIndex < tasks.length) {
       setTime(tasks[currentTaskIndex].time * 60);
     }
   }, [currentTaskIndex, tasks]);
@@ -67,22 +65,23 @@ const Timer = ({ tasks, resetDisplay }) => {
     setIsRunning(false);
   };
 
-  const skipTask = () => {
+  const skipTask = async () => {
     clearInterval(intervalRef.current);
     setIsRunning(false);
-    deleteTask();
-    playAudio(skip);
+    await deleteTask().then(() => {
+      playAudio(skip);
+    });
     setCurrentTaskIndex((prevIndex) => prevIndex + 1);
     if (currentTaskIndex === tasksSize - 1) {
       setCurrentTaskIndex(0);
       playAudio(double_bell);
-      resetDisplay();
+      await resetDisplay();
     } else {
       resetTimer();
     }
   };
 
-  const handleTaskCompletion = () => {
+  const handleTaskCompletion = async () => {
     clearInterval(intervalRef.current);
     setIsRunning(false);
     deleteTask();
@@ -96,8 +95,8 @@ const Timer = ({ tasks, resetDisplay }) => {
     }
   };
 
-  const resetTimer = () => {
-      setTime(tasks[currentTaskIndex].time * 60);
+  const resetTimer = async () => {
+    setTime(tasks[currentTaskIndex].time * 60);
   };
 
   const formatTime = (timeInSeconds) => {

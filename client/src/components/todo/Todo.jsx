@@ -82,15 +82,16 @@ const Todo = () => {
   };
 
   const resetDisplay = async () => {
-    document.getElementById("pomodoro-div").style.display = "block";
-    document.getElementById("timer").style.display = "none";
-    document.getElementById("task-list").style.display = "block";
-    document.getElementById("add-task").style.display = "block";
-    toast.success("All tasks have been completed");
+    fetch().then(() => {
+      document.getElementById("pomodoro-div").style.display = "block";
+      document.getElementById("timer").style.display = "none";
+      document.getElementById("task-list").style.display = "block";
+      document.getElementById("add-task").style.display = "block";
+      toast.success("All tasks have been completed");
+    });
   };
 
   const fetch = async () => {
-    console.log("fetched");
     await axios
       .get(`http://localhost:8080/api/v2/getTasks/${id}`)
       .then((response) => {
